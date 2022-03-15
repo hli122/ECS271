@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
+import sklearn.metrics as metrics
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.metrics import classification_report
+
 
 def train_using_gini(x_train, x_test, y_train):
 
@@ -35,13 +36,18 @@ def accuracy(y_test, y_pred):
         confusion_matrix(y_test, y_pred))
       
     print ("Accuracy : ",
-    accuracy_score(y_test,y_pred)*100)
-      
-    print("Report : ",
-    classification_report(y_test, y_pred))
+    accuracy_score(y_test,y_pred))
+
+    print("Recall:",metrics.recall_score(y_test, y_pred))
+
+    print("Precision:",metrics.precision_score(y_test, y_pred))
+    
+    print()
 
 def main():
 	data=pd.read_csv('train.csv')
+
+	data.dropna(inplace = True)
 
 	y_data = data['TenYearCHD']
 	x_data = data.drop('TenYearCHD', axis = 1)
@@ -61,10 +67,10 @@ def main():
 	# y_dv = np.int32(y_dv)
 	# print(x_dv.dtype)
 	# print(y_dv.dtype)
-	x = [d for d in x_data]
-	y = [d for d in y_data]
+	# x = [d for d in x_data]
+	# y = [d for d in y_data]
 
-	x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.3)
+	x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size = 0.3)
 	clf_gini = train_using_gini(x_train, x_test, y_train)
 	clf_entropy = train_using_entropy(x_train, x_test, y_train)
 

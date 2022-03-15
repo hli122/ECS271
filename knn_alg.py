@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import sklearn.metrics as metrics
 from numpy import linalg as LNG
+from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from collections import Counter
 
@@ -9,6 +11,7 @@ def kNN(x_train, y_train, x_test, y_test, k):
 
 	correct_count = np.zeros(10)
 	tests_count = np.zeros(10)
+	y_pred = np.zeros(len(y_test))
 
 	for test_x, test_y in zip(x_test, y_test):
 		distances = []
@@ -20,15 +23,15 @@ def kNN(x_train, y_train, x_test, y_test, k):
 		distances = sorted(distances)
 		knn_list = [i[1] for i in distances[:k]]
 		predict_result = Counter(knn_list).most_common(1)[0][0]
+		y_pred[test_y] = predict_result
 
 		if predict_result == test_y:
 			correct_count[test_y] += 1
 		tests_count[test_y] += 1
 
-	# acc = correct_count / tests_count
 	acc_av = np.sum(correct_count) / np.sum(tests_count)
 	
-	return acc_av
+	return acc_av, y_pred
 
 def find_best_k(x_train, y_train, x_test, y_test):
 
@@ -36,9 +39,13 @@ def find_best_k(x_train, y_train, x_test, y_test):
 	acc_av = []
 
 	for k in k_list:
-		a_a = kNN(x_train, y_train, x_test, y_test, k)
+		a_a, y_pred = kNN(x_train, y_train, x_test, y_test, k)
 		acc_av.append(a_a)
+		print("Confusion Matrix: ",confusion_matrix(y_test, y_pred))
 		print("Average accuracy in k="+str(k)+" is "+str(a_a))
+		print("Recall:",metrics.recall_score(y_test, y_pred))
+		print("Precision:",metrics.precision_score(y_test, y_pred))
+		print()
 
 	plt.plot(k_list, acc_av, '-o')
 	plt.xlabel("k")
@@ -48,6 +55,8 @@ def find_best_k(x_train, y_train, x_test, y_test):
 
 def main():
 	data=pd.read_csv('train.csv')
+
+	data.dropna(inplace = True)
 
 	y_data = data['TenYearCHD']
 	x_data = data.drop('TenYearCHD', axis = 1)
