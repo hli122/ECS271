@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score
 def train_using_gini(x_train, x_test, y_train):
 
 	clf_gini = DecisionTreeClassifier(criterion = "gini",
-            random_state = 100,max_depth=3, min_samples_leaf=5)
+            random_state = 100,max_depth=3, min_samples_leaf=5, class_weight = 'balanced')
 
 	clf_gini.fit(x_train, y_train)
 	return clf_gini
@@ -18,7 +18,7 @@ def train_using_gini(x_train, x_test, y_train):
 def train_using_entropy(x_train, x_test, y_train):
 
 	clf_entropy = DecisionTreeClassifier(criterion = "entropy", random_state = 100,
-            max_depth = 3, min_samples_leaf = 5)
+            max_depth = 3, min_samples_leaf = 5, class_weight = 'balanced')
 
 	clf_entropy.fit(x_train, y_train)
 	return clf_entropy
