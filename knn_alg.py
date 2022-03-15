@@ -12,6 +12,7 @@ def kNN(x_train, y_train, x_test, y_test, k):
 	correct_count = np.zeros(10)
 	tests_count = np.zeros(10)
 	y_pred = np.zeros(len(y_test))
+	i = 0
 
 	for test_x, test_y in zip(x_test, y_test):
 		distances = []
@@ -23,7 +24,8 @@ def kNN(x_train, y_train, x_test, y_test, k):
 		distances = sorted(distances)
 		knn_list = [i[1] for i in distances[:k]]
 		predict_result = Counter(knn_list).most_common(1)[0][0]
-		y_pred[test_y] = predict_result
+		y_pred[i] = predict_result
+		i += 1
 
 		if predict_result == test_y:
 			correct_count[test_y] += 1
